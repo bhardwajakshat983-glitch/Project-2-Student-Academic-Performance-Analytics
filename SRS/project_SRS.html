@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Software Requirements Specification (SRS) - Project 2</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #0366d6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #0366d6;
+            margin-bottom: 6px;
+            font-size: 26px;
+        }
+        .header h2 {
+            color: #444d56;
+            font-weight: 500;
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .control-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+        .control-table td, .control-table th {
+            border: 1px solid #e1e4e8;
+            padding: 8px 12px;
+        }
+        .control-table th {
+            background-color: #f6f8fa;
+            text-align: left;
+            width: 25%;
+        }
+        h2 {
+            color: #1b1f23;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            font-size: 20px;
+        }
+        h3 {
+            color: #24292e;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        p, li {
+            font-size: 14px;
+            color: #3f444e;
+        }
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        table.data-table th, table.data-table td {
+            border: 1px solid #d1d5da;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        table.data-table th {
+            background-color: #f1f8ff;
+            color: #0366d6;
+            font-weight: 600;
+        }
+        table.data-table tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            background-color: #e1e4e8;
+            color: #24292e;
+        }
+        .badge-req {
+            background-color: #dbedff;
+            color: #0366d6;
+            border: 1px solid #c8e1ff;
+        }
+        .box {
+            background-color: #f6f8fa;
+            border-left: 4px solid #0366d6;
+            padding: 12px 16px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        pre {
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SOFTWARE REQUIREMENTS SPECIFICATION (SRS)</h1>
+    <h2>Project 2: Student Academic Performance Analytics</h2>
+    <p style="margin: 0; font-size: 13px; color: #586069;">Five-Day Engineering Student Training | First Year – First Semester</p>
+</div>
+
+<table class="control-table">
+    <tr>
+        <th>Project Title</th>
+        <td>Student Academic Performance Analytics</td>
+        <th>Document Version</th>
+        <td>1.0.0 (Final Approved)</td>
+    </tr>
+    <tr>
+        <th>Industry Domain</th>
+        <td>Education / EdTech</td>
+        <th>Technologies</th>
+        <td>Python 3.13, NumPy 2.3, Pandas 2.3</td>
+    </tr>
+    <tr>
+        <th>Author / Role</th>
+        <td>First-Year Engineering Student (Data Analytics)</td>
+        <th>Target Environment</th>
+        <td>Jupyter Notebook, VS Code, Python Terminal</td>
+    </tr>
+</table>
+
+<h2>1. Executive Summary & Problem Statement</h2>
+<h3>1.1 Problem Statement</h3>
+<p>
+Academic institutions collect extensive operational and academic data on students, including attendance records, weekly self-study hours, home internet connectivity, and continuous assessment examination scores. However, institutions frequently encounter operational bottlenecks:
+</p>
+<ul>
+    <li>Administrative datasets contain duplicates, missing values, and out-of-range clerical recording errors that compromise evaluation integrity.</li>
+    <li>Struggling students are often identified only after end-semester examinations, precluding timely remedial intervention.</li>
+    <li>Absence of empirical analysis linking attendance deficits and digital divide disparities to academic outcomes.</li>
+</ul>
+<p>
+This project develops an automated, reproducible data analysis pipeline using <strong>Python</strong>, <strong>NumPy</strong>, and <strong>Pandas</strong> to clean, transform, explore, and report key performance trends, pinpoint at-risk students, and formulate 5 evidence-based academic support recommendations.
+</p>
+
+<h3>1.2 Core Project Objectives</h3>
+<ul>
+    <li><strong>Data Hygiene & Integrity:</strong> Ingest raw records, identify duplicate student identifiers, impute missing attendance values via department medians, and enforce $[0, 100]$ score bounds.</li>
+    <li><strong>Feature Engineering:</strong> Calculate total marks, average marks, standard letter grades, and institutional attendance policy bands.</li>
+    <li><strong>Comparative Analytics:</strong> Evaluate departmental performance differences and quantify the academic disparity caused by lack of internet access.</li>
+    <li><strong>NumPy Statistical Exploration:</strong> Calculate median, standard deviation, quartiles (Q1, Q2, Q3), and detect score outliers using Tukey's Interquartile Range (IQR).</li>
+    <li><strong>Intervention Planning:</strong> Formulate five actionable, empirical recommendations for academic leadership.</li>
+</ul>
+
+<h2>2. Dataset Schema & Characteristics</h2>
+<p>The analysis operates on the synthetic benchmark dataset <code>02_student_performance.csv</code> with the following schema:</p>
+<table class="data-table">
+    <tr>
+        <th>Attribute</th>
+        <th>Data Type</th>
+        <th>Description</th>
+        <th>Domain Constraints</th>
+    </tr>
+    <tr>
+        <td><code>Student_ID</code></td>
+        <td>String (object)</td>
+        <td>Unique student primary identifier</td>
+        <td>Format: STU1001, STU1002, ...</td>
+    </tr>
+    <tr>
+        <td><code>Name</code></td>
+        <td>String (object)</td>
+        <td>Full student name</td>
+        <td>Alphabetic string</td>
+    </tr>
+    <tr>
+        <td><code>Department</code></td>
+        <td>String (object)</td>
+        <td>Engineering department/branch</td>
+        <td>CS, IT, Data Science, Electronics, Mechanical</td>
+    </tr>
+    <tr>
+        <td><code>Attendance</code></td>
+        <td>Float (float64)</td>
+        <td>Classroom attendance percentage</td>
+        <td>$0.0\% - 100.0\%$ (contains missing values)</td>
+    </tr>
+    <tr>
+        <td><code>Study_Hours</code></td>
+        <td>Float (float64)</td>
+        <td>Weekly self-study hours</td>
+        <td>$0.0 - 40.0$ hours/week</td>
+    </tr>
+    <tr>
+        <td><code>Internet_Access</code></td>
+        <td>String (object)</td>
+        <td>Broadband connectivity at home</td>
+        <td>'Yes' or 'No'</td>
+    </tr>
+    <tr>
+        <td><code>Python_Marks</code></td>
+        <td>Float (float64)</td>
+        <td>Score in Python Programming</td>
+        <td>$0.0 - 100.0$</td>
+    </tr>
+    <tr>
+        <td><code>Math_Marks</code></td>
+        <td>Float (float64)</td>
+        <td>Score in Applied Mathematics</td>
+        <td>$0.0 - 100.0$</td>
+    </tr>
+    <tr>
+        <td><code>DBMS_Marks</code></td>
+        <td>Float (float64)</td>
+        <td>Score in Database Management</td>
+        <td>$0.0 - 100.0$</td>
+    </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. Functional Requirements (FR-01 through FR-15)</h2>
+<p>Each functional requirement maps directly to the 15 required tasks specified in the assignment curriculum:</p>
+
+<table class="data-table">
+    <tr>
+        <th style="width: 15%;">Req ID</th>
+        <th style="width: 30%;">Task Name</th>
+        <th>Description & Technical Specification</th>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-01</span></td>
+        <td>Load & Inspect Dataset</td>
+        <td>Ingest CSV via <code>pd.read_csv()</code>; inspect <code>.shape</code>, <code>.dtypes</code>, <code>.head()</code>, and <code>.describe()</code>.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-02</span></td>
+        <td>Missing & Duplicate Audit</td>
+        <td>Report missing values with <code>.isnull().sum()</code>; identify and eliminate duplicate <code>Student_ID</code>s using <code>drop_duplicates()</code>.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-03</span></td>
+        <td>Attendance Imputation</td>
+        <td>Impute missing attendance using Department-wise Median (<code>groupby('Department')['Attendance'].transform('median')</code>); justify median robustness against outliers.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-04</span></td>
+        <td>Score Range Validation</td>
+        <td>Audit all score columns for entries outside $[0, 100]$; rectify anomalies via boundary clipping (<code>.clip(0, 100)</code>).</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-05</span></td>
+        <td>Total & Average Marks</td>
+        <td>Compute <code>Total_Marks</code> as sum of 3 courses; calculate <code>Average_Marks</code> rounded to 2 decimal places.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-06</span></td>
+        <td>Categorical Grading</td>
+        <td>Assign grades using <code>pd.cut()</code>: A ($85-100$), B ($70-85$), C ($55-70$), D ($40-55$), F ($<40$).</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-07</span></td>
+        <td>Department Performance</td>
+        <td>Aggregate marks and attendance across departments using <code>groupby('Department').agg()</code>.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-08</span></td>
+        <td>Top 10 Rankers</td>
+        <td>Extract top 10 academic achievers sorted by <code>Average_Marks</code> in descending order.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-09</span></td>
+        <td>At-Risk Cohort Identification</td>
+        <td>Filter and report all students scoring below the passing threshold of $40\%$ for targeted intervention.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-10</span></td>
+        <td>Attendance Band Analytics</td>
+        <td>Segment attendance into policy tiers ($<60\%$, $60-75\%$, $75-85\%$, $>85\%$) using <code>pd.cut()</code> and aggregate marks.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-11</span></td>
+        <td>Study Hours Correlation</td>
+        <td>Calculate Pearson correlation between study hours and average marks (<code>.corr()</code>); group into study tiers.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-12</span></td>
+        <td>Digital Equity Analysis</td>
+        <td>Compare performance of students with vs. without home internet access; quantify the achievement gap.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-13</span></td>
+        <td>NumPy Statistics</td>
+        <td>Convert <code>Python_Marks</code> to NumPy array; compute mean, median, std dev, variance, and quartiles Q1, Q2, Q3.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-14</span></td>
+        <td>IQR Outlier Detection</td>
+        <td>Calculate $\text{IQR} = Q_3 - Q_1$; establish fences $Q_1 - 1.5\text{IQR}$ and $Q_3 + 1.5\text{IQR}$; identify score outliers.</td>
+    </tr>
+    <tr>
+        <td><span class="badge badge-req">FR-15</span></td>
+        <td>Empirical Recommendations</td>
+        <td>Synthesize 5 concrete, actionable academic support recommendations backed by calculated dataset findings.</td>
+    </tr>
+</table>
+
+<h2>4. Non-Functional Requirements & Constraints</h2>
+<ul>
+    <li><strong>Determinism & Reliability:</strong> Results must be 100% reproducible with no stochastic variation during re-runs.</li>
+    <li><strong>Beginner-Level Readability:</strong> Code must follow standard Pythonic naming conventions, clear modular structure, and clear comments suitable for first-year engineering students.</li>
+    <li><strong>Ethical Analytics:</strong> Statistical correlation must not be reported as causal fact; assumptions and limitations are explicitly documented.</li>
+</ul>
+
+<h2>5. Tools & Technical Architecture</h2>
+<div class="box">
+    <strong>Core Technology Stack:</strong>
+    <ul>
+        <li><strong>Language:</strong> Python 3.13 (Native syntax, list comprehensions, type safety)</li>
+        <li><strong>Numerical Processing:</strong> NumPy 2.3 (Array operations, percentiles, variance, IQR fences)</li>
+        <li><strong>Tabular Data Analytics:</strong> Pandas 2.3 (DataFrames, missing imputation, binning with <code>pd.cut()</code>, grouped aggregations)</li>
+        <li><strong>Development Environments:</strong> Jupyter Notebook (Interactive exploration) and VS Code (Production scripting)</li>
+    </ul>
+</div>
+
+<h2>6. Methodological Workflow</h2>
+<pre>
+[Raw Dataset: 02_student_performance.csv]
+                   │
+                   ▼
+[Stage 1: Inspection & Anomaly Detection (Missing, Duplicates, Out-of-bounds)]
+                   │
+                   ▼
+[Stage 2: Cleaning (Deduplication, Department-wise Median Imputation, Score Clipping)]
+                   │
+                   ▼
+[Stage 3: Feature Engineering (Total Marks, Average Marks, Grades, Attendance Tiers)]
+                   │
+                   ▼
+[Stage 4: Grouped Analytics (Department Comparison, Digital Divide, Attendance Impact)]
+                   │
+                   ▼
+[Stage 5: NumPy Statistical Modeling (Median, Std Dev, Quartiles, Tukey IQR Outliers)]
+                   │
+                   ▼
+[Stage 6: Strategic Recommendations & LMS Submission Artifact Generation]
+</pre>
+
+<h2>7. Five Evidence-Based Academic Recommendations</h2>
+<ol>
+    <li><strong>Automated Attendance Early Warning System:</strong> Trigger alerts at the $75\%$ attendance mark, addressing the observed drop to $45.59$ marks among students with $<60\%$ attendance.</li>
+    <li><strong>Dedicated Remedial Workshops:</strong> Provide weekend foundational tutoring for the 6 identified at-risk students scoring $<40\%$.</li>
+    <li><strong>Campus Digital Equity Initiative:</strong> Mitigate the observed $5.97$-mark deficit among students without home internet by offering 24/7 computer labs and offline materials.</li>
+    <li><strong>Structured Study Hours Programs:</strong> Encourage students with $<10$ study hrs/week to participate in peer study halls to work toward a healthy $15-20$ hours/week target ($r = 0.62$).</li>
+    <li><strong>Inter-Departmental Teaching Collaboration:</strong> Share active-learning and hands-on lab pedagogies across departments to elevate lower-scoring branches.</li>
+</ol>
+
+</body>
+</html>
